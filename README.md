@@ -8,3 +8,5 @@ The Fetcher Task will generate data in random interval between 10 – 300 millis
 
 Implement Decoder by dequeuing data from the DataQueue object.
 
+Fill free to change the collection type other components if needed
+
