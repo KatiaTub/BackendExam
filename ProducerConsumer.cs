@@ -8,46 +8,45 @@ namespace BackendExam
 {
     class ProducerConsumer
     {
-        private Task m_FetcherTask;
-        private Task m_DecoderTask;
+        private Task m_ProducerTask;
+        private Task m_ConsumerTask;
         private Faker m_Faker = new Faker();
-        private bool m_FastDataDecoder = true;
-        private ConcurrentQueue<ReceivedData> DataQueue = new ConcurrentQueue<ReceivedData>();
+
+        private ConcurrentQueue<ReceivedDataItem> DataQueue = new ConcurrentQueue<ReceivedDataItem>();
 
         public ProducerConsumer(CancellationToken i_Token)
         {
-            m_FetcherTask = Task.Run(async () =>
+            m_ProducerTask = Task.Run(async () =>
             {
                 while (!i_Token.IsCancellationRequested)
                 {
-                    var dataToProcess = new ReceivedData(await GenerateSampleData());
-                    DataQueue.Enqueue(dataToProcess);
+                    var data = await GenerateSampleData();
+                    DataQueue.Enqueue(new ReceivedDataItem(data));
                 }
             }, i_Token);
 
-            m_DecoderTask = Decoder(i_Token);
+            m_ConsumerTask = Task.Run(() =>
+            {
+                while (!i_Token.IsCancellationRequested)
+                {
+                    //TODO: Implement
+                    //Call DecodeData Method
+                }
+            }, i_Token);
         }
 
         public async Task<string> GenerateSampleData()
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(m_Faker.Random.Int(10, 300))); //Simulate text generator
+            await Task.Delay(TimeSpan.FromMilliseconds(m_Faker.Random.Int(300, 1000))); //Simulate text generator in random interval between 300 ms to 1 sec
             return m_Faker.Lorem.Sentence(m_Faker.Random.Int(0, 100), m_Faker.Random.Int(0, 100));
         }
 
-        private async Task Decoder(CancellationToken i_Token)
+        public void DecodeData(string i_Data)
         {
-            //TODO: Implement
-            //Call DecodeData Method
+            var processingDelay = TimeSpan.FromMilliseconds(m_Faker.Random.Int(10, 300)); //Simulated text decoder that completed in 10 to 300 ms
+            Thread.Sleep(processingDelay);
         }
 
-        public async Task DecodeData(string i_Data)
-        {
-            await Task.Delay(GetDecoderDelay()); //Simulate text Processing
-        }
-
-        private TimeSpan GetDecoderDelay() => 
-            TimeSpan.FromMilliseconds(m_FastDataDecoder ? m_Faker.Random.Int(0, 10) : m_Faker.Random.Int(10, 300));
-
-        public Task WaitForCompletion() => Task.WhenAll(m_FetcherTask ?? Task.CompletedTask, m_DecoderTask ?? Task.CompletedTask);
+        public Task WaitForCompletion() => Task.WhenAll(m_ProducerTask ?? Task.CompletedTask, m_ConsumerTask ?? Task.CompletedTask);
     }
 }

@@ -1,12 +1,13 @@
 ﻿# BackendExam
 
 
-The code demonstrates Fetcher and Decoder aka Producer-Consumer Pattern
+The code demonstrates Producer-Consumer Pattern
 Using .NET 5 Framework
+The Fetcher Task will generate data in random interval between 300 milliseconds to 1 second.
+Generated data will be enqueued to DataQueue object.
 
-The Fetcher Task will generate data in random interval between 10 – 300 milliseconds and enqueue the data to DataQueue object.
+Implement the consumer by dequeuing data from the DataQueue object and calling DecodeData methods.
+DecodeData method will take 10 to 300 milliseconds to complete.
 
-Implement Decoder by dequeuing data from the DataQueue object.
-
-Fill free to change the collection type other components if needed
+Fill free to change the collection type and other components if needed.
 

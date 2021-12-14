@@ -2,11 +2,11 @@
 
 namespace BackendExam
 {
-    class ReceivedData
+    class ReceivedDataItem
     {
-        public ReceivedData(string data)
+        public ReceivedDataItem(string i_Data)
         {
-            Data = data;
+            Data = i_Data;
             Timestamp = DateTime.Now;
         }
 
